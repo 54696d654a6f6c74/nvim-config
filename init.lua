@@ -43,6 +43,9 @@ P.S. You can delete this when you're done too. It's your config now :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Neovide specific config:
+vim.g.neovide_transparency = 0.8
+
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -90,6 +93,12 @@ require('lazy').setup({
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
+
+      -- Lazy git
+      'kdheepak/lazygit.nvim',
+
+      -- Buffer line
+      { 'akinsho/bufferline.nvim', version = "*", dependencies = 'nvim-tree/nvim-web-devicons' }
     },
   },
 
@@ -219,8 +228,9 @@ vim.o.hlsearch = false
 
 -- Make line numbers default
 vim.wo.number = true
---
+
 -- Enable relative numbers
+vim.opt.number = true
 vim.opt.relativenumber = true
 
 
@@ -267,6 +277,9 @@ vim.keymap.set('n', '<C-h>', '<C-w>h', {})
 vim.keymap.set('n', '<C-l>', '<C-w>l', {})
 vim.keymap.set('n', '<C-j>', '<C-w>j', {})
 vim.keymap.set('n', '<C-k>', '<C-w>k', {})
+
+-- Lazy git
+vim.keymap.set('n', '<leader>gg', require('lazygit').lazygit, { desc = 'Lazy [g]it' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -379,6 +392,24 @@ require('nvim-treesitter.configs').setup {
   },
 }
 
+-- Buffer controls
+local nav_buff = function(cmd)
+  if #vim.api.nvim_list_bufs() > 0 then
+    vim.cmd(cmd)
+  end
+end
+
+local delete_buff = function(force)
+  if #vim.api.nvim_list_bufs() > 1 then
+    vim.api.nvim_buf_delete(0, { force = force })
+  end
+end
+
+vim.keymap.set('n', 'L', function() nav_buff('bnext') end)
+vim.keymap.set('n', 'H', function() nav_buff('bprev') end)
+vim.keymap.set('n', '<leader>bd', function() delete_buff(false) end, { desc = '[B]uffer [D]elete' })
+vim.keymap.set('n', '<leader>bfd', function() delete_buff(true) end, { desc = '[B]uffer [F]orce [D]elete' })
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
@@ -456,6 +487,7 @@ local servers = {
 
 -- Setup neovim lua configuration
 require('neodev').setup()
+require("bufferline").setup {}
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
