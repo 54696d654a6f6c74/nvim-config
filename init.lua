@@ -219,6 +219,9 @@ require('lazy').setup({
 
 vim.cmd.colorscheme 'catppuccin'
 
+-- Add templ to known file types
+vim.filetype.add({ extension = { templ = "templ" } })
+
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -331,6 +334,7 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
   ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim' },
+  sync_install = true,
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
@@ -502,12 +506,20 @@ mason_lspconfig.setup {
 
 mason_lspconfig.setup_handlers {
   function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
+    if server_name == "html" or server_name == "htmx" then
+      require('lspconfig')[server_name].setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        filetypes = { server_name, "templ" },
+      }
+    else
+      require('lspconfig')[server_name].setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = servers[server_name],
+        filetypes = (servers[server_name] or {}).filetypes,
+      }
+    end
   end
 }
 
