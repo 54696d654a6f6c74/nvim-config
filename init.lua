@@ -44,7 +44,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Neovide specific config:
-vim.g.neovide_transparency = 0.8
+vim.g.neovide_transparency = 0.95
 
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
