@@ -4,4 +4,7 @@
 
 vim.opt.wrap = true
 vim.g.neovide_transparency = 0.8
+
+vim.g.snacks_animate = false
+
 vim.filetype.add({ extension = { templ = "templ" } })
