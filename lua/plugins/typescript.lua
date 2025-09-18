@@ -1,13 +1,11 @@
 return {
-  "neovim/nvim-lspconfig",
+  "stevearc/conform.nvim",
   opts = {
-    servers = {
-      ts_ls = {
-        settings = {
-          typescript = { format = { enable = false } },
-          javascript = { format = { enable = false } },
-        },
-      },
+    formatters_by_ft = {
+      javascript = { "prettier" },
+      typescript = { "prettier" },
+      javascriptreact = { "prettier" },
+      typescriptreact = { "prettier" },
     },
   },
 }
